@@ -1,0 +1,19 @@
+FROM alpine:3.15 as build
+RUN apk add wget unzip build-base cmake qt5-qtbase-dev qt5-qttools-dev uchardet-dev taglib-dev
+WORKDIR /tmp
+RUN wget https://github.com/flacon/flacon/archive/refs/tags/v9.5.1.zip && unzip v9.5.1.zip
+WORKDIR /tmp/flacon-9.5.1/build
+RUN cmake .. && make && make install
+
+FROM jlesage/baseimage-gui:alpine-3.15
+LABEL \
+    org.label-schema.name="docker-flacon" \
+    org.label-schema.description="Docker container for flacon" \
+    org.label-schema.version="${DOCKER_IMAGE_VERSION:-unknown}" \
+    org.label-schema.vcs-url="https://github.com/a-gal/docker-flacon" \
+    org.label-schema.schema-version="1.0"
+RUN add-pkg qt5-qtbase qt5-qttools uchardet taglib \
+    faac flac lame vorbis-tools opus-tools sox ttaenc vorbisgain wavpack
+COPY --from=build /tmp/flacon-9.5.1/build/flacon /usr/local/bin/flacon
+COPY rootfs/ /
+WORKDIR /mediafiles
