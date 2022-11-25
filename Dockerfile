@@ -7,6 +7,7 @@ WORKDIR /tmp/flacon-$FLACON_VERSION/build
 RUN cmake .. && make && make install
 
 FROM jlesage/baseimage-gui:alpine-3.15
+ARG FLACON_VERSION=9.5.1
 LABEL \
     org.label-schema.name="docker-flacon" \
     org.label-schema.description="Docker container for flacon" \
