@@ -66,13 +66,13 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
 
-      - name: Obtain latest flacon release
-        id: flacon
-        uses: pozetroninc/github-action-get-latest-release@master
-        with:
-          owner: flacon
-          repo: flacon
-          excludes: prerelease, draft
+      # - name: Obtain latest flacon release
+      #   id: flacon
+      #   uses: pozetroninc/github-action-get-latest-release@master
+      #   with:
+      #     owner: flacon
+      #     repo: flacon
+      #     excludes: prerelease, draft
 
       # Build and push Docker image with Buildx (don't push on PR)
       # https://github.com/docker/build-push-action
@@ -84,7 +84,7 @@ jobs:
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          build-args: FLACON_VERSION=${{ steps.flacon.outputs.release }}
+          # build-args: FLACON_VERSION=${{ steps.flacon.outputs.release }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
