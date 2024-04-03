@@ -1,7 +1,7 @@
 FROM alpine:3.15 as build
 RUN apk add wget unzip build-base cmake qt5-qtbase-dev qt5-qttools-dev uchardet-dev taglib-dev
 # WORKDIR /tmp
-COPY /src /tmp/build
+COPY src /tmp/build
 # ARG FLACON_VERSION=9.5.1
 # RUN wget https://github.com/flacon/flacon/archive/refs/tags/v${FLACON_VERSION}.zip && unzip v${FLACON_VERSION}.zip
 WORKDIR /tmp/build
