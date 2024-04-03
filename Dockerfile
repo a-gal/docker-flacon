@@ -1,4 +1,4 @@
-FROM alpine:3.15 as build
+FROM alpine:3.16 as build
 RUN apk add wget unzip build-base cmake qt5-qtbase-dev qt5-qttools-dev uchardet-dev taglib-dev
 # WORKDIR /tmp
 COPY src /src
@@ -7,7 +7,7 @@ COPY src /src
 WORKDIR /src/build
 RUN cmake .. && make && make install
 
-FROM jlesage/baseimage-gui:alpine-3.15
+FROM jlesage/baseimage-gui:alpine-3.19-v4
 # ARG FLACON_VERSION=9.5.1
 LABEL \
     org.label-schema.name="docker-flacon" \
@@ -17,6 +17,13 @@ LABEL \
     org.label-schema.schema-version="1.0"
 RUN add-pkg qt5-qtbase qt5-qttools uchardet taglib \
     faac flac lame vorbis-tools opus-tools sox ttaenc vorbisgain wavpack
+# Generate and install favicons.
+RUN \
+    APP_ICON_URL=https://github.com/flacon/flacon/raw/master/images/mainicon/flacon-512x512.png && \
+    install_app_icon.sh "$APP_ICON_URL"
+# Set name
+RUN set-cont-env APP_NAME "Flacon"
+
 COPY --from=build /src/build/flacon /usr/local/bin/flacon
 COPY rootfs/ /
 WORKDIR /mediafiles
