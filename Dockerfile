@@ -1,4 +1,4 @@
-FROM alpine:3.19 as build
+FROM jlesage/baseimage-gui:alpine-3.19-v4 as build
 RUN apk add wget unzip build-base cmake qt5-qtbase-dev qt5-qttools-dev uchardet-dev taglib-dev
 # WORKDIR /tmp
 COPY src /src
