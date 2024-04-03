@@ -24,6 +24,7 @@ RUN \
 # Set name
 RUN set-cont-env APP_NAME "Flacon"
 
-COPY --from=build /src/build/flacon /usr/local/bin/flacon
+COPY --from=build /usr/local/bin/flacon /usr/local/bin/flacon
+COPY --from=build /usr/local/share/flacon /usr/local/share/flacon
 COPY rootfs/ /
 WORKDIR /mediafiles
