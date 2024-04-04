@@ -10,4 +10,4 @@ Run with
 You should be able to access the GUI by opening
 ```http://[HOST IP ADDR]:5800```
 
-If anyone is using this, `main` tag is deprecated, you can use `latest` for latest version or `v*.*.*` for specific flacon version.
+If anyone is using this, `main` tag is deprecated, you can use `latest` for latest version or specific flacon version.
