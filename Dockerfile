@@ -15,7 +15,7 @@ LABEL \
     org.label-schema.version="${DOCKER_IMAGE_VERSION:-unknown}" \
     org.label-schema.vcs-url="https://github.com/a-gal/docker-flacon" \
     org.label-schema.schema-version="1.0"
-RUN add-pkg qt5-qtbase qt5-qttools uchardet taglib \
+RUN add-pkg qt5-qtbase qt5-qttools uchardet taglib fontconfig \
     faac flac lame vorbis-tools opus-tools sox ttaenc vorbisgain wavpack
 # Generate and install favicons.
 RUN \
