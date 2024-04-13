@@ -1,20 +1,25 @@
 name: Docker
 
-# This workflow uses actions that are not certified by GitHub.
-# They are provided by a third-party and are governed by
-# separate terms of service, privacy policy, and support
-# documentation.
-
 on:
   workflow_dispatch:
   schedule:
-    - cron: "0 0 * * 2"
+    - cron: "7 */12 * * *"
   push:
     branches: [ "main" ]
     # Publish semver tags as releases.
     tags: [ 'v*.*.*' ]
+    paths-ignore:
+      - 'README.md'
+      - .github/workflows/**
   pull_request:
     branches: [ "main" ]
+    paths-ignore:
+      - 'README.md'
+      - .github/workflows/**
+  # workflow_run:
+  #   workflows: ["Check for updates"]
+  #   types:
+  #     - completed
 
 env:
   # Use docker.io for Docker Hub if empty
@@ -24,7 +29,45 @@ env:
 
 
 jobs:
+  check:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    outputs:
+      run_jobs: ${{ steps.res.outputs.run_jobs }}
+      version: ${{ steps.release_ver.outputs.tag }}
+
+    
+    steps:
+      - name: Obtain latest flacon release
+        id: release_ver
+        run: |
+          TAG=$(curl https://api.github.com/repos/flacon/flacon/releases | jq -r .[0].tag_name | cut -c2-)
+          echo "tag=$TAG" >> $GITHUB_OUTPUT
+
+      - name: Check if tag exists
+        id: tag_exists
+        uses: tyriis/docker-image-tag-exists@v2.0.0
+        with:
+          # The container image registry
+          registry: ${{ env.REGISTRY }}
+          # The container image name
+          respository: ${{ github.repository }}
+          # The container image tag
+          tag: ${{ steps.release_ver.outputs.tag }}
+
+      - name: Return
+        id: res
+        run: |
+          if [[${{ steps.tag_exists.outputs.tag }} != "found"]]; then
+            echo "run_jobs=true" >> $GITHUB_OUTPUT
+          else
+            echo "run_jobs=false" >> $GITHUB_OUTPUT
+          fi
+
   build:
+    needs: [check]
+    if: ${{ (needs.check.outputs.run_jobs == true) || (github.event_name != 'schedule') }}
 
     runs-on: ubuntu-latest
     permissions:
@@ -61,10 +104,11 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Obtain latest flacon release
+      - name: Grab latest flacon release
         id: release_ver
         run: |
-          TAG=$(curl https://api.github.com/repos/flacon/flacon/releases | jq -r .[0].tag_name)
+          # TAG=$(curl https://api.github.com/repos/flacon/flacon/releases | jq -r .[0].tag_name)
+          TAG=v${{ needs.check.outputs.version }}
           echo "tag=$TAG" >> $GITHUB_OUTPUT
           git clone --depth 1 --branch $TAG https://github.com/flacon/flacon.git src
 
