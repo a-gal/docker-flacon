@@ -52,7 +52,7 @@ jobs:
           # The container image registry
           registry: ${{ env.REGISTRY }}
           # The container image name
-          respository: ${{ github.repository }}
+          repository: ${{ github.repository }}
           # The container image tag
           tag: ${{ steps.release_ver.outputs.tag }}
 
