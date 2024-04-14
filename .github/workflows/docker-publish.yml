@@ -59,7 +59,7 @@ jobs:
       - name: Return
         id: res
         run: |
-          if [[${{ steps.tag_exists.outputs.tag }} != "found"]]; then
+          if [["${{ steps.tag_exists.outputs.tag }}" != "found"]]; then
             echo "run_jobs=true" >> $GITHUB_OUTPUT
           else
             echo "run_jobs=false" >> $GITHUB_OUTPUT
