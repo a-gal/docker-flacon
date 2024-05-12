@@ -67,7 +67,7 @@ jobs:
 
   build:
     needs: [check]
-    if: ${{ (needs.check.outputs.run_jobs == true) || (github.event_name != 'schedule') }}
+    if: ${{ (needs.check.outputs.run_jobs == 'true') || (github.event_name != 'schedule') }}
 
     runs-on: ubuntu-latest
     permissions:
